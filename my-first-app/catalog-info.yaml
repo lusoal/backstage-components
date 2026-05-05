@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-first-app
+  description: my first app
+  annotations:
+    backstage.io/kubernetes-id: my-first-app
+    backstage.io/kubernetes-namespace: default
+    github.com/project-slug: lusoal/backstage-components
+spec:
+  type: website
+  lifecycle: experimental
+  owner: group:default/lusoal
