@@ -20,7 +20,7 @@ spec:
       serviceAccountName: agent-runtime
       containers:
         - name: agent
-          image: agent-runtime:0.2.1
+          image: agent-runtime:0.3.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -40,11 +40,20 @@ spec:
               value: /state/memory/MEMORY.md
             - name: SKILLS_DIR
               value: /state/skills
+            - name: AUDIT_LOG
+              value: /state/audit/AUDIT.log
+            - name: AGENT_ID
+              value: platform-ops
             - name: MCP_GITOPS_URL
               value: http://gitops-mcp.agent-platform.svc.cluster.local:8080
+            - name: LANGFUSE_HOST
+              value: http://langfuse.langfuse.svc.cluster.local:3000
           envFrom:
             - secretRef:
                 name: agent-llm-credentials
+            - secretRef:
+                name: agent-langfuse-keys
+                optional: true
           volumeMounts:
             - name: identity
               mountPath: /state/identity
@@ -54,6 +63,8 @@ spec:
               readOnly: true
             - name: memory
               mountPath: /state/memory
+            - name: audit
+              mountPath: /state/audit
             - name: sessions
               mountPath: /state/sessions
           readinessProbe:
@@ -85,5 +96,8 @@ spec:
         - name: memory
           persistentVolumeClaim:
             claimName: agent-memory
+        - name: audit
+          persistentVolumeClaim:
+            claimName: agent-audit
         - name: sessions
           emptyDir: {}
